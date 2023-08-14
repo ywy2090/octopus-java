@@ -28,4 +28,19 @@ public class User {
     public void setIdNumber(String idNumber) {
         this.idNumber = idNumber;
     }
+
+    @Override
+    public String toString() {
+        return "User{"
+                + "userName='"
+                + userName
+                + '\''
+                + ", phoneNumber='"
+                + phoneNumber
+                + '\''
+                + ", idNumber='"
+                + idNumber
+                + '\''
+                + '}';
+    }
 }
