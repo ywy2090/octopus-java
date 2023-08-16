@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS `t_user` (
   `user_name` varchar(256) NOT NULL,
   `phone_number` char(11) NOT NULL,
   `id_number` char(18) NOT NULL,
+  `like_user_name` varchar(576) NOT NULL DEFAULT '',
   `encrypted_user_name` varchar(576) NOT NULL DEFAULT '',
   `encrypted_phone_number` varchar(352) NOT NULL DEFAULT '',
   `encrypted_id_number` varchar(576) NOT NULL DEFAULT '',

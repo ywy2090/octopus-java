@@ -18,9 +18,9 @@ rules:
             assistedQuery:
               name: user_name
               encryptorName: assisted_encryptor
-#            likeQuery:
-#              name: like_query_username
-#              encryptorName: like_encryptor
+            likeQuery:
+              name: like_user_name
+              encryptorName: like_encryptor
           id_number:
             cipher:
               name: encrypted_id_number

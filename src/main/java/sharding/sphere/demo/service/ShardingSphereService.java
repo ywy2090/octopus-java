@@ -41,5 +41,8 @@ public class ShardingSphereService implements ApplicationRunner {
 
         List<User> userList1 = userMapper.findUserByRange("id_number", idNumber, idNumber);
         System.out.println("findUserByRange查询返回: " + userList1);
+
+        List<User> userList2 = userMapper.findUserByLike("user_name", "王%");
+        System.out.println("findUserByLike查询返回: " + userList2);
     }
 }
