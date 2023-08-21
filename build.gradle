@@ -45,7 +45,8 @@ sourceSets {
             srcDir 'src/jmh/resources'
         }
 
-        compileClasspath += sourceSets.main.runtimeClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+        compileClasspath += sourceSets.main.compileClasspath
 
         compileClasspath += main.output
         runtimeClasspath += main.output
@@ -97,12 +98,14 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.33'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
     implementation 'org.apache.shardingsphere:shardingsphere-jdbc-core:5.4.0'
-   // implementation 'org.apache.shardingsphere:shardingsphere-sharding-core:5.4.0'
+    implementation 'com.github.jsqlparser:jsqlparser:4.6'
     implementation mybatis, logger, spring, spring_boot
+
+//    jmhImplementation 'com.github.jsqlparser:jsqlparser:4.6'
+//    implementation 'org.apache.shardingsphere:shardingsphere-jdbc-core:5.4.0'
 
     jmhImplementation 'org.openjdk.jmh:jmh-core:1.36'
     jmhAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.36'
-
     testImplementation 'junit:junit:4.13.2'
 }
 
