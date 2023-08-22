@@ -1,6 +1,9 @@
 package sharding.sphere.demo.service;
 
 import java.util.List;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -11,18 +14,14 @@ import sharding.sphere.demo.mapper.UserMapper;
 @Component
 public class ShardingSphereService implements ApplicationRunner {
 
+    private static final Logger logger = LoggerFactory.getLogger(ShardingSphereService.class);
+
     @Autowired UserMapper userMapper;
+
+    @Autowired private SqlSessionFactory sqlSessionFactory;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-
-        //
-        // 1. 生成数据源
-        // org.apache.shardingsphere.shardingjdbc.api.ShardingDataSourceFactory#createDataSource
-        // 2. 配置规则
-        // org.apache.shardingsphere.core.rule.ShardingRule#createEncryptRule
-        // 3. 加载规则
-        // org.apache.shardingsphere.encrypt.rule.EncryptRule#initEncryptors
 
         String userName = "王章11";
         String phoneNumber = "15002982093";
@@ -44,5 +43,8 @@ public class ShardingSphereService implements ApplicationRunner {
 
         List<User> userList2 = userMapper.findUserByLike("user_name", "王%");
         System.out.println("findUserByLike查询返回: " + userList2);
+
+        int deleteRet = userMapper.deleteUser("user_name", userName);
+        System.out.println("deleteUser返回: " + deleteRet);
     }
 }
