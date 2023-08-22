@@ -46,7 +46,7 @@ public class SQLInterceptor implements Interceptor {
         String sql = boundSql.getSql();
         logger.info(" => method: {}, raw sql: {}", method, sql);
 
-        rewriteSQL2Invocation(invocation, sql);
+        // rewriteSQL2Invocation(invocation, sql);
 
         return invocation.proceed();
     }

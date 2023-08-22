@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.Statement;
 import org.apache.shardingsphere.sql.parser.api.CacheOption;
 import org.apache.shardingsphere.sql.parser.api.SQLParserEngine;
 import org.apache.shardingsphere.sql.parser.core.ParseASTNode;
@@ -23,18 +23,6 @@ import org.openjdk.jmh.runner.options.TimeValue;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @State(Scope.Thread) // Thread: 该状态为每个线程独享。
 public class SQLParserBenchmark {
-
-    //    @Param({
-    //        "select * from t_user",
-    //        "SELECT col1 AS a, col2 AS b, col3 AS c FROM table WHERE col1 = 10 AND col2 = 20 AND
-    // col3 = 30",
-    //        "SELECT SUM (salary) FROM emp WHERE salary BETWEEN 5000 AND 6000 AND joindate < date
-    // '2021-05-01' + interval 1 year;",
-    //        "SELECT /*+ PARALLEL */ cfe.id_collateral_ref.nextval, id_collateral FROM (  SELECT
-    // DISTINCT a.id_collateral FROM cfe.collateral a LEFT JOIN cfe.collateral_ref b ON
-    // a.id_collateral = b.id_collateral WHERE b.id_collateral_ref IS NULL );"
-    //    })
-
     public static final String selectSql0 = "select * from t_user";
     public static final String selectSql1 =
             "SELECT col1 AS a, col2 AS b, col3 AS c FROM t_table WHERE col1 = 10 AND col2 = 20 AND col3 = 30";
@@ -158,9 +146,8 @@ public class SQLParserBenchmark {
                     + "            WHERE\n"
                     + "                a.date ='2021-6-22'";
 
-     @Param({selectSql0, selectSql1, selectSql2, insertSql0, insertSql1})
-//    @Param({insertSql0, insertSql1})
-    String selectSql;
+    @Param({selectSql0, selectSql1, selectSql2, selectSql3, insertSql0, insertSql1})
+    String sql;
 
     @Setup
     public void setup() {
@@ -174,18 +161,18 @@ public class SQLParserBenchmark {
 
     @Benchmark
     public void jSqlParser() throws JSQLParserException {
-        Select select = (Select) CCJSqlParserUtil.parse(selectSql);
+        Statement statement = (Statement) CCJSqlParserUtil.parse(sql);
     }
 
     @Benchmark
     public void druidParser() {
-        List<SQLStatement> sqlStatements = SQLUtils.parseStatements(selectSql, JdbcConstants.MYSQL);
+        List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
     }
 
     @Benchmark
     public void shardingSphereParser() {
         SQLParserEngine sqlParserEngine = new SQLParserEngine("MYSQL", new CacheOption(128, 1024));
-        ParseASTNode parseASTNode = sqlParserEngine.parse(selectSql, false);
+        ParseASTNode parseASTNode = sqlParserEngine.parse(sql, false);
     }
     /*
     SELECT
