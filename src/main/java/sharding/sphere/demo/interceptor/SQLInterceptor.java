@@ -64,8 +64,8 @@ public class SQLInterceptor implements Interceptor {
         final BoundSql boundSql = statement.getBoundSql(parameterObject);
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 
-        // 1. 参数修改
-        // 2. SQL修改
+        // 1. SQL解析, 重写
+        // 2. 参数修改,
 
         //         if (rawSql.contains("SUM")) {
         //             rawSql.replace("SUM", "UDF_SUM");

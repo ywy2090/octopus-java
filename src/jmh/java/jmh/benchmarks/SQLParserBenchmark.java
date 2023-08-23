@@ -18,135 +18,22 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
+import sharding.sphere.demo.sql.ConstSQLs;
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @State(Scope.Thread) // Thread: 该状态为每个线程独享。
 public class SQLParserBenchmark {
-    public static final String selectSql0 = "select * from t_user";
-    public static final String selectSql1 =
-            "SELECT col1 AS a, col2 AS b, col3 AS c FROM t_table WHERE col1 = 10 AND col2 = 20 AND col3 = 30";
 
-    public static final String selectSql2 =
-            "SELECT SUM (salary) FROM emp WHERE salary BETWEEN 5000 AND 6000 AND joindate < date '2021-05-01' + interval 1 year";
-
-    //    public static final String selectSql3 =
-    //            "SELECT /*+ PARALLEL */ cfe.id_collateral_ref.nextval, id_collateral FROM (
-    // SELECT DISTINCT a.id_collateral FROM cfe.collateral a LEFT JOIN cfe.collateral_ref b ON
-    // a.id_collateral = b.id_collateral WHERE b.id_collateral_ref IS NULL )";
-    public static final String selectSql3 =
-            "SELECT cfe.id_collateral_ref.nextval, id_collateral FROM (  SELECT DISTINCT a.id_collateral FROM cfe.collateral a LEFT JOIN cfe.collateral_ref b ON a.id_collateral = b.id_collateral WHERE b.id_collateral_ref IS NULL )";
-
-    public static final String insertSql0 = "insert into mytable (col1) values (1)";
-
-    public static final String insertSql1 =
-            "insert into `test_user`(`account`, `user_name`, `age`, `sex`, `create_time`)\n"
-                    + "values ('test1', 'test_user_1', 1, 0, now())\n"
-                    + "on duplicate key update \n"
-                    + "`user_name` = 'test_user_1', `age` = 1, `sex` = 0";
-
-    public static final String selectSql4 =
-            "SELECT\n"
-                    + "                b.date,\n"
-                    + "                b.advertiser_company_id,\n"
-                    + "                b.advertiser_id,\n"
-                    + "                b.product_id,\n"
-                    + "                b.company_id,\n"
-                    + "                sum( impression ) AS impression,\n"
-                    + "                sum( click ) AS click,\n"
-                    + "                sum( target_work ) AS targetWork,\n"
-                    + "                (\n"
-                    + "                    SELECT\n"
-                    + "                        sum( estimated_revenue ) AS estimatedRevenue\n"
-                    + "                    FROM\n"
-                    + "                        (\n"
-                    + "                            SELECT\n"
-                    + "                                ore.date,\n"
-                    + "                                ore.advertiser_company_id,\n"
-                    + "                                tir.advertiser_id,\n"
-                    + "                                ore.product_id,\n"
-                    + "                                ore.company_id\n"
-                    + "                            FROM\n"
-                    + "                                th_otherinfo ore\n"
-                    + "                                    LEFT JOIN th_import_report tir ON ore.date = tir.date\n"
-                    + "                                    AND ore.link_id = tir.link_id\n"
-                    + "                            WHERE\n"
-                    + "                                ore.date ='2021-6-7'\n"
-                    + "                              AND ore.link_id = '440630'\n"
-                    + "                            GROUP BY\n"
-                    + "                                ore.advertiser_company_id,\n"
-                    + "                                tir.advertiser_id,\n"
-                    + "                                ore.product_id,\n"
-                    + "                                ore.company_id\n"
-                    + "                        ) b\n"
-                    + "                            LEFT JOIN (\n"
-                    + "                            SELECT\n"
-                    + "                                ore.estimated_revenue,\n"
-                    + "                                ore.advertiser_company_id,\n"
-                    + "                                ore.company_id,\n"
-                    + "                                tir.advertiser_id,\n"
-                    + "                                tir.product_id,\n"
-                    + "                                tir.date\n"
-                    + "                            FROM\n"
-                    + "                                th_otherinfo ore\n"
-                    + "                                    LEFT JOIN th_import_report tir ON ore.date = tir.date\n"
-                    + "                                    AND ore.link_id = tir.link_id\n"
-                    + "                            GROUP BY\n"
-                    + "                                tir.date,\n"
-                    + "                                tir.link_id\n"
-                    + "                        ) a ON a.date = b.date\n"
-                    + "                            AND a.advertiser_company_id = b.advertiser_company_id\n"
-                    + "                            AND a.advertiser_id = b.advertiser_id\n"
-                    + "                            AND a.product_id = b.product_id\n"
-                    + "                            AND a.company_id = b.company_id\n"
-                    + "                    WHERE\n"
-                    + "                        a.date ='2021-6-22'\n"
-                    + "                ) AS estimatedRevenue\n"
-                    + "            FROM\n"
-                    + "                (\n"
-                    + "                    SELECT\n"
-                    + "                        ore.date,\n"
-                    + "                        ore.advertiser_company_id,\n"
-                    + "                        tir.advertiser_id,\n"
-                    + "                        ore.product_id,\n"
-                    + "                        ore.company_id\n"
-                    + "                    FROM\n"
-                    + "                        th_otherinfo ore\n"
-                    + "                            LEFT JOIN th_import_report tir ON ore.date = tir.date\n"
-                    + "                            AND ore.link_id = tir.link_id\n"
-                    + "                    WHERE\n"
-                    + "                        ore.date ='2021-6-7'\n"
-                    + "                      AND ore.link_id = '440630'\n"
-                    + "                    GROUP BY\n"
-                    + "                        ore.advertiser_company_id,\n"
-                    + "                        tir.advertiser_id,\n"
-                    + "                        ore.product_id,\n"
-                    + "                        ore.company_id\n"
-                    + "                ) b\n"
-                    + "                    LEFT JOIN (\n"
-                    + "                    SELECT\n"
-                    + "                        ore.target_work,\n"
-                    + "                        ore.estimated_revenue,\n"
-                    + "                        ore.advertiser_company_id,\n"
-                    + "                        ore.company_id,\n"
-                    + "                        tir.advertiser_id,\n"
-                    + "                        tir.product_id,\n"
-                    + "                        tir.date,\n"
-                    + "                        tir.impression,\n"
-                    + "                        tir.click\n"
-                    + "                    FROM\n"
-                    + "                        th_otherinfo ore\n"
-                    + "                            LEFT JOIN th_import_report tir ON ore.date = tir.date\n"
-                    + "                            AND ore.link_id = tir.link_id\n"
-                    + "                ) a ON a.date = b.date\n"
-                    + "                    AND a.advertiser_company_id = b.advertiser_company_id\n"
-                    + "                    AND a.advertiser_id = b.advertiser_id\n"
-                    + "                    AND a.product_id = b.product_id\n"
-                    + "                    AND a.company_id = b.company_id\n"
-                    + "            WHERE\n"
-                    + "                a.date ='2021-6-22'";
-
-    @Param({selectSql0, selectSql1, selectSql2, selectSql3, insertSql0, insertSql1})
+    @Param({
+        ConstSQLs.selectSql0,
+        ConstSQLs.selectSql1,
+        ConstSQLs.selectSql2,
+        ConstSQLs.selectSql3,
+        ConstSQLs.selectSql4,
+        ConstSQLs.insertSql0,
+        ConstSQLs.insertSql1
+    })
     String sql;
 
     @Setup
@@ -174,107 +61,6 @@ public class SQLParserBenchmark {
         SQLParserEngine sqlParserEngine = new SQLParserEngine("MYSQL", new CacheOption(128, 1024));
         ParseASTNode parseASTNode = sqlParserEngine.parse(sql, false);
     }
-    /*
-    SELECT
-                b.date,
-                b.advertiser_company_id,
-                b.advertiser_id,
-                b.product_id,
-                b.company_id,
-                sum( impression ) AS impression,
-                sum( click ) AS click,
-                sum( target_work ) AS targetWork,
-                (
-                    SELECT
-                        sum( estimated_revenue ) AS estimatedRevenue
-                    FROM
-                        (
-                            SELECT
-                                ore.date,
-                                ore.advertiser_company_id,
-                                tir.advertiser_id,
-                                ore.product_id,
-                                ore.company_id
-                            FROM
-                                th_otherinfo ore
-                                    LEFT JOIN th_import_report tir ON ore.date = tir.date
-                                    AND ore.link_id = tir.link_id
-                            WHERE
-                                ore.date ='2021-6-7'
-                              AND ore.link_id = '440630'
-                            GROUP BY
-                                ore.advertiser_company_id,
-                                tir.advertiser_id,
-                                ore.product_id,
-                                ore.company_id
-                        ) b
-                            LEFT JOIN (
-                            SELECT
-                                ore.estimated_revenue,
-                                ore.advertiser_company_id,
-                                ore.company_id,
-                                tir.advertiser_id,
-                                tir.product_id,
-                                tir.date
-                            FROM
-                                th_otherinfo ore
-                                    LEFT JOIN th_import_report tir ON ore.date = tir.date
-                                    AND ore.link_id = tir.link_id
-                            GROUP BY
-                                tir.date,
-                                tir.link_id
-                        ) a ON a.date = b.date
-                            AND a.advertiser_company_id = b.advertiser_company_id
-                            AND a.advertiser_id = b.advertiser_id
-                            AND a.product_id = b.product_id
-                            AND a.company_id = b.company_id
-                    WHERE
-                        a.date ='2021-6-22'
-                ) AS estimatedRevenue
-            FROM
-                (
-                    SELECT
-                        ore.date,
-                        ore.advertiser_company_id,
-                        tir.advertiser_id,
-                        ore.product_id,
-                        ore.company_id
-                    FROM
-                        th_otherinfo ore
-                            LEFT JOIN th_import_report tir ON ore.date = tir.date
-                            AND ore.link_id = tir.link_id
-                    WHERE
-                        ore.date ='2021-6-7'
-                      AND ore.link_id = '440630'
-                    GROUP BY
-                        ore.advertiser_company_id,
-                        tir.advertiser_id,
-                        ore.product_id,
-                        ore.company_id
-                ) b
-                    LEFT JOIN (
-                    SELECT
-                        ore.target_work,
-                        ore.estimated_revenue,
-                        ore.advertiser_company_id,
-                        ore.company_id,
-                        tir.advertiser_id,
-                        tir.product_id,
-                        tir.date,
-                        tir.impression,
-                        tir.click
-                    FROM
-                        th_otherinfo ore
-                            LEFT JOIN th_import_report tir ON ore.date = tir.date
-                            AND ore.link_id = tir.link_id
-                ) a ON a.date = b.date
-                    AND a.advertiser_company_id = b.advertiser_company_id
-                    AND a.advertiser_id = b.advertiser_id
-                    AND a.product_id = b.product_id
-                    AND a.company_id = b.company_id
-            WHERE
-                a.date ='2021-6-22'
-        */
 
     public static void main(String[] args) throws RunnerException {
         Options opt =
