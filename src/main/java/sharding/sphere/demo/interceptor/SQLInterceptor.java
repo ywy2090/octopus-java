@@ -1,13 +1,16 @@
 package sharding.sphere.demo.interceptor;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.util.JdbcConstants;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Properties;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
@@ -35,6 +38,8 @@ public class SQLInterceptor implements Interceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(SQLInterceptor.class);
 
+    @Autowired private SQLRewriterVisitorAdapter visitor;
+
     @Autowired private SQLRewriter sqlRewriter;
 
     @Override
@@ -45,6 +50,13 @@ public class SQLInterceptor implements Interceptor {
         BoundSql boundSql = statement.getSqlSource().getBoundSql(args[1]);
         String sql = boundSql.getSql();
         logger.info(" => method: {}, raw sql: {}", method, sql);
+
+        List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+        if (CollectionUtils.isNotEmpty(sqlStatements)) {
+            for (SQLStatement sqlStatement : sqlStatements) {
+                sqlStatement.accept(visitor);
+            }
+        }
 
         // rewriteSQL2Invocation(invocation, sql);
 
@@ -62,7 +74,7 @@ public class SQLInterceptor implements Interceptor {
         MappedStatement statement = (MappedStatement) args[0];
         MapperMethod.ParamMap parameterObject = (MapperMethod.ParamMap) args[1];
         final BoundSql boundSql = statement.getBoundSql(parameterObject);
-        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+        // List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
 
         // 1. SQL解析, 重写
         // 2. 参数修改,
