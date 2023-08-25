@@ -12,6 +12,7 @@ import org.apache.shardingsphere.sql.parser.api.CacheOption;
 import org.apache.shardingsphere.sql.parser.api.SQLParserEngine;
 import org.apache.shardingsphere.sql.parser.core.ParseASTNode;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -47,19 +48,22 @@ public class SQLParserBenchmark {
     }
 
     @Benchmark
-    public void jSqlParser() throws JSQLParserException {
+    public void jSqlParser(Blackhole blackhole) throws JSQLParserException {
         Statement statement = (Statement) CCJSqlParserUtil.parse(sql);
+        blackhole.consume(statement); // dead code
     }
 
     @Benchmark
-    public void druidParser() {
+    public void druidParser(Blackhole blackhole) {
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
+        blackhole.consume(sqlStatements); // dead code
     }
 
     @Benchmark
-    public void shardingSphereParser() {
+    public void shardingSphereParser(Blackhole blackhole) {
         SQLParserEngine sqlParserEngine = new SQLParserEngine("MYSQL", new CacheOption(128, 1024));
         ParseASTNode parseASTNode = sqlParserEngine.parse(sql, false);
+        blackhole.consume(parseASTNode); // dead code
     }
 
     public static void main(String[] args) throws RunnerException {
