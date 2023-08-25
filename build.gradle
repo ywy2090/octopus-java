@@ -123,7 +123,7 @@ googleJavaFormat {
     options style: 'AOSP'
     source = sourceSets*.allJava
     include '**/*.java'
-//    exclude '**/*Test.java'
+    exclude '**/BenchmarkDemo.java'
 //    exclude '**/Test*.java'
 //    exclude '**/Mock*.java'
 }
