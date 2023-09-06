@@ -1,7 +1,4 @@
-package sharding.sphere.demo.service;
-
-import java.io.StringWriter;
-import java.util.List;
+package sharding.sphere.demo.commad;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -10,6 +7,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
+import java.util.List;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.bouncycastle.util.encoders.Hex;
 import org.slf4j.Logger;
@@ -25,21 +23,21 @@ import sharding.sphere.demo.mapper.UserMapper;
 import sharding.sphere.demo.utils.AESUtil;
 
 @Component
-public class ShardingSphereService implements ApplicationRunner {
+public class DbApplicationRunner implements ApplicationRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(ShardingSphereService.class);
+    private static final Logger logger = LoggerFactory.getLogger(DbApplicationRunner.class);
 
     @Autowired UserMapper userMapper;
 
-    @Autowired
-    BinaryUserMapper binaryUserMapper;
+    @Autowired BinaryUserMapper binaryUserMapper;
 
     @Autowired private SqlSessionFactory sqlSessionFactory;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        String sql = "select * from t where id=1 and name=ming group by uid limit 1,200 order by ctime";
+        String sql =
+                "select * from t where id=1 and name=ming group by uid limit 1,200 order by ctime";
 
         SQLExpr expr = SQLUtils.toSQLExpr(sql, JdbcConstants.MYSQL);
 
@@ -56,7 +54,8 @@ public class ShardingSphereService implements ApplicationRunner {
         System.out.println("getParameters:" + visitor.getParameters());
         System.out.println("getOrderByColumns:" + visitor.getOrderByColumns());
         System.out.println("getGroupByColumns:" + visitor.getGroupByColumns());
-        System.out.println("---------------------------------------------------------------------------");
+        System.out.println(
+                "---------------------------------------------------------------------------");
 
         /*
         // 使用select访问者进行select的关键信息打印

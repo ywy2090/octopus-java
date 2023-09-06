@@ -15,5 +15,5 @@
 # limitations under the License.
 #
 
-sharding.sphere.demo.plugin.EmptyEncryptAlgorithm
-sharding.sphere.demo.plugin.EmptyAssistedEncryptAlgorithm
+sharding.sphere.demo.shardingshpere.plugin.EmptyEncryptAlgorithm
+sharding.sphere.demo.shardingshpere.plugin.EmptyAssistedEncryptAlgorithm

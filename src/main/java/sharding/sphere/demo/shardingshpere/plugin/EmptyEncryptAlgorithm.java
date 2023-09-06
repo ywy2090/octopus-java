@@ -1,4 +1,4 @@
-package sharding.sphere.demo.plugin;
+package sharding.sphere.demo.shardingshpere.plugin;
 
 import java.util.Properties;
 import org.apache.shardingsphere.encrypt.api.context.EncryptContext;
