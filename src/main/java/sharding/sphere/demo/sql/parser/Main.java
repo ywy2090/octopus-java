@@ -49,7 +49,13 @@ public class Main {
     public static void druidParser(String sql) {
         List<com.alibaba.druid.sql.ast.SQLStatement> sqlStatements =
                 SQLUtils.parseStatements(sql, DbType.mysql);
-        // System.out.println(sqlStatements);
+
+        String mySqlString = SQLUtils.toMySqlString(sqlStatements.get(0));
+        System.out.println(mySqlString);
+
+        // SQLUtils.
+
+        System.out.println(sqlStatements);
     }
 
     public static void sqlParser(String sql) {
@@ -62,12 +68,16 @@ public class Main {
     }
 
     public static void main(String[] args) throws JSQLParserException {
-        List<String> sqlList = ConstSQLs.sqlList;
-        for (String sql : sqlList) {
-            System.out.println(" sql=> " + sql);
-            jsqlParser(sql);
-            druidParser(sql);
-            // sqlParser(sql);
-        }
+         // String sql = "select enc_user_name as user_name,enc_phone_number as phone_number,enc_id_number as id_number from t_user where id_number=a AND phone_number > b AND id_number like 'a%'";
+         // String sql = "SELECT * FROM( SELECT * FROM biz_fund_info WHERE tenant_code = ? AND ((ta_code, manager_code) IN ((?,?)) OR department_type IN (?) ))";
+         // String sql = "SELECT col1 AS a, col2 AS b, col3 AS c FROM my_table WHERE col_1 = 10 AND col_2 = 20 OR col_3 = 30";
+         // String sql = "insert into `test_user`(`account`, `user_name`, `age`, `sex`, `create_time`)values ('test1', 'test_user_1', 1, 0, now())on duplicate key update `user_name` = 'test_user_1', `age` = 1, `sex` = 0";
+         // String sql = "SELECT /*+ PARALLEL */ cfe.id_collateral_ref.nextval, id_collateral FROM (SELECT DISTINCT a.id_collateral FROM cfe.collateral a LEFT JOIN cfe.collateral_ref b ON a.id_collateral = b.id_collateral WHERE b.id_collateral_ref IS NULL )";
+           String sql = "SELECT Persons.LastName, Persons.FirstName, Orders.OrderNo\n" +
+                   "FROM Persons\n" +
+                   "INNER JOIN Orders\n" +
+                   "ON Persons.Id_P=Orders.Id_P\n" +
+                   "ORDER BY Persons.LastName";
+         druidParser(sql);
     }
 }
