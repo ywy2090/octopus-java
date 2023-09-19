@@ -45,6 +45,7 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,21 +54,32 @@ public class PreparedStatementWrapper extends BasicWrapper<PreparedStatement>
 
     private static final Logger logger = LoggerFactory.getLogger(PreparedStatementWrapper.class);
 
-    public PreparedStatementWrapper(final PreparedStatement target) {
+    private Properties properties;
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public PreparedStatementWrapper(final PreparedStatement target, Properties properties) {
         super(target);
+        setProperties(properties);
     }
 
     @Override
     public ResultSet executeQuery(final String sql) throws SQLException {
         logger.info("SQL: {}", sql);
         ResultSet resultSet = target.executeQuery(sql);
-        return new ResultSetWrapper(resultSet);
+        return new ResultSetWrapper(resultSet, properties);
     }
 
     @Override
     public ResultSet executeQuery() throws SQLException {
         ResultSet resultSet = target.executeQuery();
-        return new ResultSetWrapper(resultSet);
+        return new ResultSetWrapper(resultSet, properties);
     }
 
     @Override
@@ -239,7 +251,7 @@ public class PreparedStatementWrapper extends BasicWrapper<PreparedStatement>
     @Override
     public ResultSet getResultSet() throws SQLException {
         ResultSet resultSet = target.getResultSet();
-        return new ResultSetWrapper(resultSet);
+        return new ResultSetWrapper(resultSet, properties);
     }
 
     @Override
@@ -352,7 +364,8 @@ public class PreparedStatementWrapper extends BasicWrapper<PreparedStatement>
 
     @Override
     public Connection getConnection() throws SQLException {
-        return target.getConnection();
+        Connection connection = target.getConnection();
+        return connection;
     }
 
     @Override
@@ -380,7 +393,7 @@ public class PreparedStatementWrapper extends BasicWrapper<PreparedStatement>
     @Override
     public ResultSet getGeneratedKeys() throws SQLException {
         ResultSet generatedKeys = target.getGeneratedKeys();
-        return new ResultSetWrapper(generatedKeys);
+        return new ResultSetWrapper(generatedKeys, properties);
     }
 
     @Override

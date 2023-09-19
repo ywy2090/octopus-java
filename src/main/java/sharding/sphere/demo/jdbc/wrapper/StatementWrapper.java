@@ -27,6 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
+import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,19 @@ public class StatementWrapper extends BasicWrapper<Statement> implements Stateme
 
     private static final Logger logger = LoggerFactory.getLogger(StatementWrapper.class);
 
-    public StatementWrapper(final Statement target) {
+    private Properties properties;
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public StatementWrapper(final Statement target, Properties properties) {
         super(target);
+        setProperties(properties);
     }
 
     @Override
@@ -43,7 +55,7 @@ public class StatementWrapper extends BasicWrapper<Statement> implements Stateme
         // TODO: 处理SQL
         logger.info("SQL: {}", sql);
         ResultSet resultSet = target.executeQuery(sql);
-        return new ResultSetWrapper(resultSet);
+        return new ResultSetWrapper(resultSet, properties);
     }
 
     @Override
@@ -123,7 +135,7 @@ public class StatementWrapper extends BasicWrapper<Statement> implements Stateme
     @Override
     public ResultSet getResultSet() throws SQLException {
         ResultSet resultSet = target.getResultSet();
-        return new ResultSetWrapper(resultSet);
+        return new ResultSetWrapper(resultSet, properties);
     }
 
     @Override
@@ -196,7 +208,7 @@ public class StatementWrapper extends BasicWrapper<Statement> implements Stateme
     @Override
     public ResultSet getGeneratedKeys() throws SQLException {
         ResultSet generatedKeys = target.getGeneratedKeys();
-        return new ResultSetWrapper(generatedKeys);
+        return new ResultSetWrapper(generatedKeys, properties);
     }
 
     @Override

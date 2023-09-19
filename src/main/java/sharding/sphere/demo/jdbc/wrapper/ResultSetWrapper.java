@@ -44,11 +44,23 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Properties;
 
 public class ResultSetWrapper extends BasicWrapper<ResultSet> implements ResultSet {
 
-    public ResultSetWrapper(final ResultSet target) {
+    private Properties properties;
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public ResultSetWrapper(final ResultSet target, Properties properties) {
         super(target);
+        setProperties(properties);
     }
 
     @Override

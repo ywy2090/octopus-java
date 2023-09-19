@@ -15,7 +15,6 @@
  */
 package sharding.sphere.demo.jdbc;
 
-import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.util.JdbcUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -76,12 +75,12 @@ public class MyDriver implements Driver {
 
         DriverWrapper driverWrapper = getDataSource(url, properties);
         Connection connect = driverWrapper.connect(url, properties);
-        return new ConnectionWrapper(connect);
+        return new ConnectionWrapper(connect, properties);
     }
 
     private DriverWrapper getDataSource(String url, Properties info) throws SQLException {
         if (driverWrapper == null) {
-            synchronized (DataSourceProxyImpl.class) {
+            synchronized (DriverWrapper.class) {
                 if (driverWrapper == null) {
                     DataSourceProxyConfig config = parseConfig(url, info);
                     Driver rawDriver = createDriver(config.getRawDriverClassName());

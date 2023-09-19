@@ -56,7 +56,7 @@ public class DriverWrapper implements Driver {
 
     public ConnectionWrapper connect(String url, Properties properties) throws SQLException {
         Connection connection = driver.connect(url, properties);
-        return new ConnectionWrapper(connection);
+        return new ConnectionWrapper(connection, properties);
     }
 
     @Override
