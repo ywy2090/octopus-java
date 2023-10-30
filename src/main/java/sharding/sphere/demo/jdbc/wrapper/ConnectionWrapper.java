@@ -54,6 +54,12 @@ public class ConnectionWrapper extends BasicWrapper<Connection> implements Conne
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         // TODO: 处理SQL
         logger.info("SQL: {}", sql);
+
+        // TODO: 处理SQL
+        if (sql.startsWith("select")) {
+            sql = "select * from t_user";
+        }
+
         PreparedStatement preparedStatement = target.prepareStatement(sql);
         return new PreparedStatementWrapper(preparedStatement, properties);
     }
@@ -266,7 +272,6 @@ public class ConnectionWrapper extends BasicWrapper<Connection> implements Conne
     public PreparedStatement prepareStatement(String sql, String[] columnNames)
             throws SQLException {
         logger.info("SQL: {}", sql);
-        // TODO: 处理SQL
         PreparedStatement preparedStatement = target.prepareStatement(sql, columnNames);
         return new PreparedStatementWrapper(preparedStatement, properties);
     }

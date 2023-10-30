@@ -135,6 +135,8 @@ public class PreparedStatementWrapper extends BasicWrapper<PreparedStatement>
 
     @Override
     public void setInt(final int parameterIndex, final int x) throws SQLException {
+        //
+        // 缓存下来
         target.setInt(parameterIndex, x);
     }
 
