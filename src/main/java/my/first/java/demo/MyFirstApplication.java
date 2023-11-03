@@ -1,4 +1,4 @@
-package sharding.sphere.demo;
+package my.first.java.demo;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfigurati
 
 @SpringBootApplication(exclude = JtaAutoConfiguration.class)
 @MapperScan("sharding.sphere.demo.mapper")
-public class ShardingSphereDemoApplication {
+public class MyFirstApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ShardingSphereDemoApplication.class, args);
+        SpringApplication.run(MyFirstApplication.class, args);
     }
 }

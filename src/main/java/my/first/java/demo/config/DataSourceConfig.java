@@ -1,4 +1,4 @@
-package sharding.sphere.demo.config;
+package my.first.java.demo.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import java.util.Map;
@@ -99,14 +99,6 @@ public class DataSourceConfig {
         DruidDataSource datasource = new DruidDataSource();
         datasource.setUrl(url);
         datasource.setUsername(username);
-
-        // 大于32才启用行内加解密
-        //        String decryptedPassword =
-        //                StringUtils.length(password) > 32
-        //                        ? SecurityUtils.decrypt(password, APP_KEY,
-        // WedprConstant.AOMP_PUBLICK_KEY)
-        //                        : password;
-
         datasource.setPassword(password);
         datasource.setDriverClassName(driverClassName);
         datasource.setDefaultAutoCommit(defaultAutoCommit);

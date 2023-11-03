@@ -1,4 +1,4 @@
-package sharding.sphere.demo.entity;
+package my.first.java.demo.entity;
 
 public class User {
     private String userName;

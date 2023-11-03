@@ -1,4 +1,5 @@
 .gradle
+**/dist
 **/build/
 !src/**/build/
 

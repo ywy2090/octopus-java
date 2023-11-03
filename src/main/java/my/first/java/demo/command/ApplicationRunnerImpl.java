@@ -1,15 +1,15 @@
-package sharding.sphere.demo.service;
+package my.first.java.demo.command;
 
 import java.util.List;
+import my.first.java.demo.entity.User;
+import my.first.java.demo.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import sharding.sphere.demo.entity.User;
-import sharding.sphere.demo.mapper.UserMapper;
 
 @Component
-public class ShardingSphereService implements ApplicationRunner {
+public class ApplicationRunnerImpl implements ApplicationRunner {
 
     @Autowired UserMapper userMapper;
 

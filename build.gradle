@@ -57,7 +57,6 @@ configurations {
     all*.exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
     all*.exclude group: "org.slf4j", module: "log4j-over-slf4j"
     all*.exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
-    // all*.exclude module: "shardingsphere-logging-core"
     all*.exclude module: "logback-classic"
     all*.exclude module: "logback-core"
 }
@@ -96,8 +95,6 @@ dependencies {
     implementation 'com.alibaba:druid:1.2.18'
     implementation 'mysql:mysql-connector-java:8.0.33'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
-    implementation 'org.apache.shardingsphere:shardingsphere-jdbc-core:5.4.0'
-   // implementation 'org.apache.shardingsphere:shardingsphere-sharding-core:5.4.0'
     implementation mybatis, logger, spring, spring_boot
 
     jmhImplementation 'org.openjdk.jmh:jmh-core:1.36'
