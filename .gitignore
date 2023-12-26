@@ -2,6 +2,7 @@
 **/dist/
 **/build/
 !src/**/build/
+jmh*
 
 # Ignore Gradle GUI config
 gradle-app.setting
