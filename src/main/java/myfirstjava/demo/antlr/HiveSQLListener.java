@@ -1,5 +1,8 @@
 package myfirstjava.demo.antlr;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import myfirstjava.demo.antlr.codegen.hive.v2.HiveLexer;
 import myfirstjava.demo.antlr.codegen.hive.v2.HiveParser;
 import myfirstjava.demo.antlr.codegen.hive.v2.HiveParserBaseListener;
@@ -9,10 +12,6 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class HiveSQLListener extends HiveParserBaseListener {
     List<String> inputTables = new ArrayList<>();

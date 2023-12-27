@@ -118,8 +118,7 @@ List mybatis = [
 dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
     implementation 'com.alibaba:druid:1.2.20'
-    implementation 'org.antlr:antlr4:4.13.1'
-    testImplementation 'org.pentaho:pentaho-aggdesigner-algorithm:5.1.5-jhyde'
+    implementation 'org.antlr:antlr4-runtime:4.13.1'
     implementation ('org.apache.hive:hive-exec:2.3.9') {
         exclude group: 'org.pentaho', module: 'pentaho-aggdesigner-algorithm'
     }
@@ -150,6 +149,20 @@ googleJavaFormat {
 //    exclude '**/Mock*.java'
 }
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+task integTest(type: Test) {
+    testClassesDirs = sourceSets.integTest.output.classesDirs
+    classpath = sourceSets.integTest.runtimeClasspath
+}
+
+task jmh(type: JavaExec, dependsOn: jmhClasses) {
+    main = 'jmh.benchmarks.Main'
+    classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
+}
+
 jar {
     with {
         destinationDirectory = file('dist/apps')
@@ -176,18 +189,4 @@ jar {
             into 'dist'
         }
     }
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-task integTest(type: Test) {
-    testClassesDirs = sourceSets.integTest.output.classesDirs
-    classpath = sourceSets.integTest.runtimeClasspath
-}
-
-task jmh(type: JavaExec, dependsOn: jmhClasses) {
-    main = 'jmh.benchmarks.Main'
-    classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
 }

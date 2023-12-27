@@ -1,5 +1,6 @@
 package myfirstjava.demo.antlr;
 
+import java.util.Optional;
 import myfirstjava.demo.antlr.codegen.hive.v2.HiveLexer;
 import myfirstjava.demo.antlr.codegen.hive.v2.HiveParser;
 import myfirstjava.demo.antlr.codegen.hive.v2.HiveParserBaseListener;
@@ -10,8 +11,6 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStreamRewriter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-
-import java.util.Optional;
 
 public class HiveSQLRewriter extends HiveParserBaseListener {
     TokenStreamRewriter tokenStreamRewriter;
