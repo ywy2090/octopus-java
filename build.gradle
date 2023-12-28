@@ -24,8 +24,10 @@ repositories {
 }
 
 java {
+    targetCompatibility = JavaVersion.VERSION_1_8
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
@@ -119,6 +121,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
     implementation 'com.alibaba:druid:1.2.20'
     implementation 'org.antlr:antlr4-runtime:4.13.1'
+    implementation 'org.apache.spark:spark-sql_2.12:2.4.8'
     implementation ('org.apache.hive:hive-exec:2.3.9') {
         exclude group: 'org.pentaho', module: 'pentaho-aggdesigner-algorithm'
     }
