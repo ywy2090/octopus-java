@@ -1,101 +1,49 @@
 package octopus.sql.engine;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import octopus.antlr.codegen.hive.v2.HiveLexer;
 import octopus.antlr.codegen.hive.v2.HiveParser;
-import octopus.antlr.codegen.hive.v2.HiveParserBaseVisitor;
+import octopus.antlr.codegen.hive.v2.HiveParserBaseListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenStreamRewriter;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.misc.Pair;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-public class HiveSQLRewriterVisitor extends HiveParserBaseVisitor<String> {
+public class HiveParserListenerImpl extends HiveParserBaseListener {
+    List<String> inputTables = new ArrayList<>();
+    List<Pair<String, String>> outputTables = new ArrayList<>();
 
-    private TokenStreamRewriter tokenStreamRewriter;
-
-    public HiveSQLRewriterVisitor(TokenStreamRewriter tokenStreamRewriter) {
-        this.tokenStreamRewriter = tokenStreamRewriter;
+    @Override
+    public void enterSelectStatement(HiveParser.SelectStatementContext ctx) {
+        super.enterSelectStatement(ctx);
     }
 
     @Override
-    public String visit(ParseTree tree) {
-        System.out.println(" visit: " + tree.toString());
-        return super.visit(tree);
+    public void enterTableSource(HiveParser.TableSourceContext ctx) {
+        System.out.println(" enterTableSource: " + ctx.tableName().getText());
+        inputTables.add(ctx.tableName().getText());
+        super.enterTableSource(ctx);
     }
 
     @Override
-    public String visitTerminal(TerminalNode node) {
-        // System.out.println(" visitTerminal: " + node.getText());
-        return super.visitTerminal(node);
+    public void enterTableOrPartition(HiveParser.TableOrPartitionContext ctx) {
+        String table = ctx.tableName() != null ? ctx.tableName().getText() : "UNKNOWN";
+        String partition = ctx.partitionSpec() != null ? ctx.partitionSpec().getText() : "UNKNOWN";
+
+        outputTables.add(new Pair<>(table, partition));
+        super.enterTableOrPartition(ctx);
     }
 
-    @Override
-    public String visitIdentifier(HiveParser.IdentifierContext ctx) {
-
-        // System.out.println(" visitIdentifier: " + ctx.getText());
-
-        String text = ctx.getText();
-        // this.tokenStreamRewriter.replace(ctx.getStart(), "f_" + text);
-        return super.visitIdentifier(ctx);
-    }
-
-    @Override
-    public String visitColumnName(HiveParser.ColumnNameContext ctx) {
-
-        System.out.println(" visitColumnName: " + ctx.getText());
-
-        return super.visitColumnName(ctx);
-    }
-
-    /*
-    @Override
-    public String visitTableOrPartition(HiveParser.TableOrPartitionContext ctx) {
-
-        String text = ctx.getText();
-        System.out.println(" visitTableOrPartition: " + ctx.getText());
-
-        return super.visitTableOrPartition(ctx);
-    }
-    */
-
-    @Override
-    public String visitTableName(HiveParser.TableNameContext ctx) {
-
-        System.out.println(" ==>> visitTableName: " + ctx.getText());
-
-        // format: tableName
-        // format: dbName.tableName
-        int childCount = ctx.getChildCount();
-        // System.out.println(" ==>> childCount : " + childCount);
-
-        if (childCount == 1) {
-            // tableName
-            String tableName = ctx.getText();
-        } else {
-            String dbName = ctx.getChild(0).getText();
-            String tableName = ctx.getChild(2).getText();
-            System.out.println();
-        }
-
-        return null;
-        // return super.visitTableName(ctx);
-    }
-
-    @Override
-    public String visitConstant(HiveParser.ConstantContext ctx) {
-
-        System.out.println(" ======>> visitConstant: " + ctx.getText());
-
-        return super.visitConstant(ctx);
-    }
-
-    @Override
-    public String visitColumnAssignmentClause(HiveParser.ColumnAssignmentClauseContext ctx) {
-
-        System.out.println(" ======>> visitColumnAssignmentClause: " + ctx.getText());
-
-        return super.visitColumnAssignmentClause(ctx);
+    public void show() {
+        System.out.println(
+                inputTables.stream().collect(Collectors.joining(",", "[", "]"))
+                        + " -> "
+                        + outputTables.stream()
+                                .map(pair -> pair.a + "@" + pair.b)
+                                .collect(Collectors.joining(",", "[", "]")));
     }
 
     public static void main(String[] args) {
@@ -283,24 +231,28 @@ public class HiveSQLRewriterVisitor extends HiveParserBaseVisitor<String> {
                         + "on a.id = b.id \n"
                         + "where a.c1 > 20 and b.c2< 100 and c.c3 = '202010'\n";
 
-        String querySQL = query6;
+        String querySQL = query8;
 
         // System.out.println(querySQL);
 
-        CodePointCharStream charStream = CharStreams.fromString(querySQL);
-        HiveLexer lexer = new HiveLexer(charStream);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        HiveParser parser = new HiveParser(tokens);
-        TokenStreamRewriter tokenStreamRewriter = new TokenStreamRewriter(tokens);
-        HiveSQLRewriterVisitor visitor = new HiveSQLRewriterVisitor(tokenStreamRewriter);
-        HiveParser.StatementContext statement = parser.statement();
-        visitor.visit(statement);
+        /*
+                CodePointCharStream charStream = CharStreams.fromString(querySQL);
+                HiveLexer lexer = new HiveLexer(charStream);
+                CommonTokenStream tokens = new CommonTokenStream(lexer);
+                HiveParser parser = new HiveParser(tokens);
+                TokenStreamRewriter tokenStreamRewriter = new TokenStreamRewriter(tokens);
+                HiveSQLRewriterVisitor_V2 visitor = new HiveSQLRewriterVisitor_V2(tokenStreamRewriter);
+                HiveParser.StatementContext statement = parser.statement();
+                visitor.visit(statement);
+
 
         //        String text = tokenStreamRewriter.getText();
         //        System.out.println(text);
 
-        String stringTree = statement.toStringTree(parser);
-        System.out.println(" ===>> " + stringTree);
+                String stringTree = statement.toStringTree(parser);
+                System.out.println(" ===>> " + stringTree);
+
+                */
 
         //                ParseDriver pd = new ParseDriver();
         //
@@ -313,9 +265,17 @@ public class HiveSQLRewriterVisitor extends HiveParserBaseVisitor<String> {
 
         // System.out.println("sql = " + querySQL);
 
-    }
+        CodePointCharStream charStream = CharStreams.fromString(querySQL);
+        HiveLexer lexer = new HiveLexer(charStream);
+        CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
 
-    // 1. 解析表名、列名
-    // 2. 解析列名 = 列值
-    // 3. 记录血缘关系
+        HiveParser parser = new HiveParser(commonTokenStream);
+        HiveParser.StatementsContext statements = parser.statements();
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+        HiveParserListenerImpl hiveParserListener = new HiveParserListenerImpl();
+        walker.walk(hiveParserListener, statements);
+
+        hiveParserListener.show();
+    }
 }
